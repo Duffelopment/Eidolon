@@ -24,6 +24,8 @@ Eidolon is a local-first malware triage assistant inspired by services like Viru
    pip install -r requirements.txt
    ```
 
+   > 💡 The pinned SQLAlchemy release is compatible with Python 3.13, so make sure you reinstall dependencies if you're upgrading interpreters.
+
 3. Launch the development server:
 
    ```bash
