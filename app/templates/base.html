@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Eidolon Investigative Toolkit{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}" />
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>Eidolon Investigative Toolkit</h1>
+        <p class="subtitle">Local-first threat triage with visual insights.</p>
+      </div>
+    </header>
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p>Run locally with FastAPI · Designed for flexible malware investigations.</p>
+      </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

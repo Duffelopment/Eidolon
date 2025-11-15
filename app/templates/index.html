@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" integrity="sha512-ZNIu28szbmWzxubAEANgT70IghYy7GjVRU5bRoOkoMtkQqtuDx7nBt4z7vPyUb/lo8B/Qn+Gzl4zLJJ7U6QHgA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <h2>Upload a file for triage</h2>
+  <form id="upload-form">
+    <input id="file-input" type="file" name="file" required />
+    <button type="submit">Scan file</button>
+  </form>
+  <p class="hint">Scans run entirely on your machine. Hashes and heuristics are stored locally.</p>
+</section>
+
+<section class="layout">
+  <div class="layout-column">
+    <h2>Scan history</h2>
+    <ul id="scan-list" class="scan-list">
+      {% for scan in scans %}
+      <li data-scan-id="{{ scan.id }}">
+        <strong>{{ scan.filename }}</strong>
+        <span class="badge score-{{ 'high' if scan.score >= 12 else 'medium' if scan.score >= 6 else 'low' if scan.score else 'clean' }}">Score: {{ scan.score }}</span>
+        <small>{{ scan.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="layout-column">
+    <h2>Scan details</h2>
+    <div id="scan-details" class="scan-details">
+      <p>Select a scan to inspect its indicators.</p>
+    </div>
+    <div id="graph-container" class="graph-container">
+      <svg id="graph" width="100%" height="320"></svg>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>API calibration workspace</h2>
+  <form id="api-form" class="stack">
+    <div class="grid">
+      <label>Friendly name<input type="text" name="name" required /></label>
+      <label>Base URL<input type="url" name="base_url" placeholder="https://example/api" required /></label>
+      <label>Auth type<input type="text" name="auth_type" placeholder="Bearer" /></label>
+      <label>API key / token<input type="text" name="api_key" /></label>
+    </div>
+    <label>Static headers (JSON)<textarea name="headers_json" rows="2" placeholder='{"User-Agent": "Eidolon"}'></textarea></label>
+    <label>Notes<textarea name="notes" rows="2"></textarea></label>
+    <button type="submit">Save endpoint</button>
+  </form>
+
+  <div>
+    <h3>Configured endpoints</h3>
+    <ul id="api-list" class="api-list">
+      {% for api in apis %}
+      <li data-api-id="{{ api.id }}">
+        <div class="api-list__header">
+          <strong>{{ api.name }}</strong>
+          <button class="api-calibrate" data-api-id="{{ api.id }}">Calibrate</button>
+        </div>
+        <p class="muted">{{ api.base_url }}</p>
+        {% if api.last_test_status %}
+        <p class="muted">Last calibration: {{ api.last_test_status }} at {{ api.last_tested_at }}</p>
+        {% endif %}
+        {% if api.last_test_notes %}
+        <pre>{{ api.last_test_notes }}</pre>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/app.js') }}"></script>
+{% endblock %}
